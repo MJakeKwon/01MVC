@@ -10,9 +10,8 @@
 String title="";
 
 String menu=(String) request.getAttribute("menu");
-ProductVO prodVO = new ProductVO();
 
-HashMap<String, Object> map = (HashMap<String, Object>) request.getAttribute("map");
+Map<String, Object> map = (HashMap<String, Object>) request.getAttribute("map");
 SearchVO searchVO = (SearchVO) request.getAttribute("searchVO");
 
 int total = 0;
@@ -160,7 +159,7 @@ if (total > 0) {
 				<%
 					int no = list.size();
 					for (int i = 0; i < list.size(); i++) {
-						prodVO = (ProductVO) list.get(i);
+						ProductVO prodVO = (ProductVO) list.get(i);
 						System.out.println(prodVO);
 				%>
 
@@ -188,11 +187,11 @@ if (total > 0) {
 					<td><%=prodVO.getRegDate()%></td>
 					<td></td>
 					<%	if (((UserVO) session.getAttribute("user")).getRole().equals("admin")){	%>
-							<%	if(prodVO.getProTranCode().equals("0")){ %>
+							<% if(prodVO.getProTranCode().equals("0")){ %>
 										<td align="left">판매중</td>
-									<%}else if(prodVO.getProTranCode().equals(1)) {%>
+									<%}else if(prodVO.getProTranCode().equals("1")) {%>
 												<td align ="left"> 결제완료
-												<a href ="updateTranCodebyProd.do?prodNo=<%=prodVO.getProdNo() %>&tranCode=2">배송하기</a>
+												<a href ="/updateTranCodebyProd.do?prodNo=<%=prodVO.getProdNo() %>&tranCode=2">배송하기</a>
 												</td>
 									<%}else if(prodVO.getProTranCode().equals("2")){ %>
 											<td align ="left"> 배송중</td>
@@ -206,13 +205,12 @@ if (total > 0) {
 														<td align ="left"> 재고없음</td>
 													<%} %>
 										<%} %>
+							</td>
 					</tr>
 				<tr>
 					<td colspan="11" bgcolor="D6D7D6" height="1"></td>
 				</tr>
-				<%
-				}
-				%>
+				<% } %>
 			</table>
 			
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">

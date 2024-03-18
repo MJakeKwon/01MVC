@@ -8,7 +8,7 @@ import com.model2.mvc.service.purchase.PurchaseService;
 import com.model2.mvc.service.purchase.impl.PurchaseServiceImpl;
 import com.model2.mvc.service.purchase.vo.PurchaseVO;
 
-public class UprdateTranCodeAction extends Action {
+public class UpdateTranCodeByProdAction extends Action {
 
 	public String execute(	HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

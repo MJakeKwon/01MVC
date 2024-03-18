@@ -54,14 +54,20 @@ public class PurchaseDao {
 		
 		Connection con = DBUtil.getConnection();
 
-		String sql = "SELECT* FROM (SELECT ROW_NUMBER() OVER (ORDER BY user_id) AS rn, ts.tran_no, u.user_id,"
+		String sql = "SELECT purchase.* FROM (SELECT ROW_NUMBER() OVER (ORDER BY user_id) AS rn, ts.tran_no, u.user_id,"
 													+ "NVL(ts.tran_status_code, 0) AS tran_code, COUNT(*) OVER () AS count "
-													+ "FROM users u, transaction ts  "
-													+ "WHERE u.user_id = ts.buyer_id AND u.user_id = ?) AS purchase "
+													+ "FROM users u INNER JOIN transaction ts ON u.user_id = ts.buyer_id "
+													+ "WHERE u.user_id = ?) AS purchase "
 													+ "WHERE rn BETWEEN ? AND ?";
-		PreparedStatement stmt = 
-				con.prepareStatement(	sql, ResultSet.TYPE_SCROLL_INSENSITIVE, 
-													 ResultSet.CONCUR_UPDATABLE);
+		
+		PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+		// 매개변수 할당
+		// 매개변수 할당
+		stmt.setString(1, buyerId); // buyerId 매개변수 할당
+		stmt.setInt(2, searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit() + 1); // 페이지네이션 시작 값
+		stmt.setInt(3, searchVO.getPage() * searchVO.getPageUnit()); // 페이지네이션 종료 값
+
 		ResultSet rs = stmt.executeQuery();
 		rs.last();
 		int total = rs.getRow();

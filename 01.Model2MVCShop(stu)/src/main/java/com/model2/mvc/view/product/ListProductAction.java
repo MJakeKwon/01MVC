@@ -1,6 +1,7 @@
 package com.model2.mvc.view.product;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +33,7 @@ public class ListProductAction extends Action {
 		searchVO.setPageUnit(Integer.parseInt(pageUnit));
 		
 		ProductService service=new ProductServiceImpl();
-		HashMap<String,Object> map=service.getProductList(searchVO);
+		Map<String,Object> map=service.getProductList(searchVO);
 
 		request.setAttribute("map", map);
 		request.setAttribute("searchVO", searchVO);

@@ -1,6 +1,7 @@
 package com.model2.mvc.service.product.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.model2.mvc.common.SearchVO;
 import com.model2.mvc.service.product.ProductService;
@@ -24,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 		return proDAO.findProduct(prodNo);
 	}
 	
-	public HashMap<String,Object> getProductList(SearchVO searchVO) throws Exception {
+	public Map<String,Object> getProductList(SearchVO searchVO) throws Exception {
 		return proDAO.getProductList(searchVO);
 	}
 	
