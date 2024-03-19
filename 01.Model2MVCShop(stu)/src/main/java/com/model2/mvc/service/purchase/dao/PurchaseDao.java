@@ -29,9 +29,11 @@ public class PurchaseDao {
 		ResultSet rs = stmt.executeQuery();
 		
 		PurchaseVO purchaseVO = null;
-		
 		while (rs.next()) {
-			purchaseVO.setTranNo(rs.getInt("tran_no"));
+		    if (purchaseVO == null) {
+		        purchaseVO = new PurchaseVO(); // PurchaseVO 객체 생성
+		    }
+		    purchaseVO.setTranNo(rs.getInt("tran_no"));
 			purchaseVO.setPurchaseProd(new ProductDao().findProduct(rs.getInt("prod_no")));
 			purchaseVO.setBuyer(new UserDAO().findUser(rs.getString("buyer_id")));
 			purchaseVO.setPaymentOption(rs.getString("payment_option"));
@@ -43,8 +45,24 @@ public class PurchaseDao {
 			purchaseVO.setOrderDate(rs.getDate("order_data"));
 			purchaseVO.setDivyDate(rs.getString("dlvy_date"));
 
-			System.out.println("find");
+		    System.out.println("find");
 		}
+
+//		while (rs.next()) {
+//			purchaseVO.setTranNo(rs.getInt("tran_no"));
+//			purchaseVO.setPurchaseProd(new ProductDao().findProduct(rs.getInt("prod_no")));
+//			purchaseVO.setBuyer(new UserDAO().findUser(rs.getString("buyer_id")));
+//			purchaseVO.setPaymentOption(rs.getString("payment_option"));
+//			purchaseVO.setReceiverName(rs.getString("receiver_name"));
+//			purchaseVO.setReceiverPhone(rs.getString("receiver_phone"));
+//			purchaseVO.setDivyAddr(rs.getString("demailaddr"));
+//			purchaseVO.setDivyRequest(rs.getString("dlvy_request"));
+//			purchaseVO.setTranCode(rs.getString("tran_status_code").trim());
+//			purchaseVO.setOrderDate(rs.getDate("order_data"));
+//			purchaseVO.setDivyDate(rs.getString("dlvy_date"));
+//
+//			System.out.println("find");
+//		}
 		con.close();
 		System.out.println("purchaseFind: " + purchaseVO);
 		return purchaseVO;
@@ -54,21 +72,28 @@ public class PurchaseDao {
 		
 		Connection con = DBUtil.getConnection();
 
-		String sql = "SELECT purchase.* FROM (SELECT ROW_NUMBER() OVER (ORDER BY user_id) AS rn, ts.tran_no, u.user_id,"
-													+ "NVL(ts.tran_status_code, 0) AS tran_code, COUNT(*) OVER () AS count "
-													+ "FROM users u INNER JOIN transaction ts ON u.user_id = ts.buyer_id "
-													+ "WHERE u.user_id = ?) AS purchase "
-													+ "WHERE rn BETWEEN ? AND ?";
+		String sql = 
+				"SELECT * FROM "
+				+ "("
+				+ "	SELECT ROW_NUMBER() OVER (ORDER BY user_id) AS rn, "
+				+ "	ts.*, u.user_id ,NVL(ts.tran_status_code, 0) AS tran_code, "
+				+ "	COUNT(*) OVER () AS count "
+				+ "	FROM users u "
+				+ "	INNER JOIN transaction ts ON "
+				+ "	u.user_id = ts.buyer_id "
+				+ "	WHERE u.user_id = ? "
+				+ ") "
+				+ "WHERE rn BETWEEN ? AND ?";
 		
 		PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 		// 매개변수 할당
-		// 매개변수 할당
 		stmt.setString(1, buyerId); // buyerId 매개변수 할당
 		stmt.setInt(2, searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit() + 1); // 페이지네이션 시작 값
 		stmt.setInt(3, searchVO.getPage() * searchVO.getPageUnit()); // 페이지네이션 종료 값
-
+		System.out.println(sql);
 		ResultSet rs = stmt.executeQuery();
+		
 		rs.last();
 		int total = rs.getRow();
 		
@@ -85,13 +110,13 @@ public class PurchaseDao {
 				PurchaseVO purchaseVO = new PurchaseVO();
 				purchaseVO.setTranNo(rs.getInt("tran_no"));
 				purchaseVO.setPurchaseProd(new ProductDao().findProduct(rs.getInt("prod_no")));
-				purchaseVO.setBuyer(new UserDAO().findUser(rs.getString("buyer_id")));
+				purchaseVO.setBuyer(new UserDAO().findUser(rs.getString("user_id")));
 				purchaseVO.setPaymentOption(rs.getString("payment_option"));
 				purchaseVO.setReceiverName(rs.getString("receiver_name"));
 				purchaseVO.setReceiverPhone(rs.getString("receiver_phone"));
 				purchaseVO.setDivyAddr(rs.getString("demailaddr"));
 				purchaseVO.setDivyRequest(rs.getString("dlvy_request"));
-				purchaseVO.setTranCode(rs.getString("tran_status_code").trim());
+				purchaseVO.setTranCode(rs.getString("tran_code").trim());
 				purchaseVO.setOrderDate(rs.getDate("order_data"));
 				purchaseVO.setDivyDate(rs.getString("dlvy_date"));
 

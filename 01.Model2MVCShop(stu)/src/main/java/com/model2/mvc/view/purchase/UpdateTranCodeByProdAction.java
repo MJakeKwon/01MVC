@@ -19,6 +19,7 @@ public class UpdateTranCodeByProdAction extends Action {
 		
 		PurchaseVO purchaseVO = service.getPurchase(Integer.parseInt(tranNo));
 		purchaseVO.setTranCode(tranCode);
+		
 		System.out.println(purchaseVO+"업데이트 시작");
 		
 		service.updateTranCode(purchaseVO);

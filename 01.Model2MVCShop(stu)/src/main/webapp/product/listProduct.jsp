@@ -191,7 +191,7 @@ if (total > 0) {
 										<td align="left">판매중</td>
 									<%}else if(prodVO.getProTranCode().equals("1")) {%>
 												<td align ="left"> 결제완료
-												<a href ="/updateTranCodebyProd.do?prodNo=<%=prodVO.getProdNo() %>&tranCode=2">배송하기</a>
+												<a href ="/updateTranCodeByProd.do?tranNo=<%=prodVO.getTranNo() %>&tranCode=2">배송하기</a>
 												</td>
 									<%}else if(prodVO.getProTranCode().equals("2")){ %>
 											<td align ="left"> 배송중</td>

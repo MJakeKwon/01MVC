@@ -67,48 +67,8 @@ public class ProductDao {
 		return prodVO;
 	}
 	public Map<String,Object> getProductList(SearchVO searchVO) throws Exception{
-		
-//		Connection con = DBUtil.getConnection();
-//		
-//		String sql = "SELECT ptj.rn, pd.prod_no, pd.prod_name, pd.price, pd.reg_date, NVL(ts.tran_status_code,0) tran_code, ptj.count "
-//				           + "FROM product pd LEFT JOIN transaction ts ON pd.prod_no = ts.prod_no, "
-//				           + "(SELECT prod_no, ROWNUM rn, COUNT(*) OVER() count FROM product ";
-//		
-//		if (searchVO.getSearchCondition() != null) {
-//			if (searchVO.getSearchCondition().equals("0") &&  !searchVO.getSearchKeyword().equals("")) {
-//				sql += " WHERE prod_no='" + searchVO.getSearchKeyword()
-//						+ "'";
-//			} else if (searchVO.getSearchCondition().equals("1") &&  !searchVO.getSearchKeyword().equals("")) {
-//				sql += "WHERE prod_name LIKE '%" + searchVO.getSearchKeyword()  + "%'";
-//				
-//			}else if (searchVO.getSearchCondition().equals("2") &&  !searchVO.getSearchKeyword().equals("")){
-//				sql += "WHERE price='"+searchVO.getSearchKeyword()+"'";
-//			}
-//		}
-//			sql += ") ptj WHERE ptj.prod_no = pd.prod_no AND ptj.rn BETWEEN ? AND ? ORDER BY pd.prod_no";
-//		
-//			PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-//
-//			// 매개변수 할당
-//			stmt.setInt(1, searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit() + 1);
-//			stmt.setInt(2, searchVO.getPage() * searchVO.getPageUnit());
-//
-//			ResultSet rs = stmt.executeQuery();
-//
-//			rs.last();
-//			int total = rs.getRow();
-//			System.out.println(total);
-//			Map<String,Object> map = new HashMap<String,Object>();
-//			map.put("count", new Integer(total));
-//
-//			rs.absolute(searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit()+1);
-//			System.out.println("searchVO.getPage():" + searchVO.getPage());
-//			System.out.println("searchVO.getPageUnit():" + searchVO.getPageUnit());
-//
-//			ArrayList<ProductVO> list = new ArrayList<ProductVO>();
-		
-		//DB 연결
-	      Connection con = DBUtil.getConnection();
+
+		 Connection con = DBUtil.getConnection();
 	      
 	      //SQL 작성
 	      String sql = "select * from PRODUCT ";
@@ -176,7 +136,7 @@ public class ProductDao {
 		            prodVO.setFileName      (rs.getString   ("IMAGE_FILE"      ));
 		            prodVO.setRegDate      (rs.getDate      ("REG_DATE"         ));
 		            
-		            String sqlPurchase = "select TRAN_STATUS_CODE from transaction where prod_no = ?";
+		            String sqlPurchase = "select TRAN_STATUS_CODE,tran_no from transaction where prod_no = ?";
 		            PreparedStatement stmt2   = con.prepareStatement(sqlPurchase);
 		            
 		            stmt2.setInt(1, prodVO.getProdNo());
@@ -185,9 +145,11 @@ public class ProductDao {
 		            if (!rs1.next())
 		            {
 		               prodVO.setProTranCode("0");
+		               prodVO.setTranNo(0);
 		            }else
 		            {
 		               prodVO.setProTranCode(rs1.getString("TRAN_STATUS_CODE").trim());
+		               prodVO.setTranNo(rs1.getInt("tran_no"));
 		            }
 		            
 		            System.out.println(prodVO);

@@ -130,7 +130,7 @@
 					<td></td>
 					<td align="left">
 					<% if(vo.getTranCode().equals("2")) { %>
-					<a href="updateTranCode.do?tranNo=<%= vo.getTranNo() %>&tranCode=3"/>물건 도착(수령 확인)</a>
+					<a href="/updateTranCodeByProd.do?tranNo=<%= vo.getTranNo() %>&tranCode=3"/>물건 도착(수령 확인)</a>
 					<% } %> 
 					</td>
 				</tr>
